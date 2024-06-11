@@ -46,14 +46,14 @@ export const getSingleLead = async (id) => {
 };
 
 // Function to get a All Leads
-export const getLeads = async () => {
+export const getLeads = async (search, page) => {
   /*
     Makes a GET request to fetch a list of Leads.
  
     Returns:
     - Promise containing response data.
   */
-  return await commonRequest("GET", `${BASE_URL}/api/v1/lead/all-leads`);
+  return await commonRequest("GET", `${BASE_URL}/api/v1/lead/user/details?search=${search}&page=${page}`, "");
 };
 
 

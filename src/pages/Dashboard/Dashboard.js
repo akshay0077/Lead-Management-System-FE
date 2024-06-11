@@ -24,6 +24,10 @@ const Home = () => {
   const [showspin, setShowSpin] = useState(true);
   const [search, setSearch] = useState("");
 
+  const [email, setEmail] = useState('');
+  const [subject, setSubject] = useState('');
+  const [message, setMessage] = useState('');
+
   const [page, setPage] = useState(1);
   const [pageCount, setPageCount] = useState(0);
 
@@ -39,7 +43,7 @@ const Home = () => {
   // Get The Leads Data
   const leadsGet = async () => {
     try {
-      const response = await getLeads();
+      const response = await getLeads(search, page);
       if (response !== undefined) {
         setLeadsData(response.leadsData);
         setPageCount(response.Pagination.pageCount);
@@ -72,15 +76,15 @@ const Home = () => {
   };
 
   // Export Leads Data in to CSV file
-  // const importleads = async () => {
-  //   const response = await importToCsv();
-  //   console.log(response);
-  //   if (response !== undefined) {
-  //     window.open(response.downloadUrl, "blank");
-  //   } else {
-  //     toast.error("error !");
-  //   }
-  // };
+  const importleads = async () => {
+    const response = await importToCsv();
+    console.log(response);
+    if (response !== undefined) {
+      window.open(response.downloadUrl, "blank");
+    } else {
+      toast.error("error !");
+    }
+  };
 
   // Pagination Handle
   const handlePrevious = () => {
@@ -127,7 +131,7 @@ const Home = () => {
       <div className="container">
         <Container className="main_div mt-4">
           <Row className="search_add d-flex justify-content-between">
-            {/* <Col xs={12} lg={4} className="mb-3 mb-lg-0">
+            <Col xs={12} lg={4} className="mb-3 mb-lg-0">
               <Form className="d-flex">
                 <Form.Control
                   type="search"
@@ -138,7 +142,7 @@ const Home = () => {
                 />
                 <Button variant="danger">Search</Button>
               </Form>
-            </Col> */}
+            </Col>
             <Col xs={12} lg={12} className="d-flex justify-content-end">
               <div className="add_btn px-2">
                 <Button variant="danger" onClick={addlead} className="d-flex">
@@ -151,7 +155,7 @@ const Home = () => {
                 </Button>
               </div>
               <div className="export_csv px-2">
-                <Button variant="danger" onClick={importToCsv}>
+                <Button variant="danger" onClick={importleads}>
                   Import CSV To DB
                 </Button>
               </div>

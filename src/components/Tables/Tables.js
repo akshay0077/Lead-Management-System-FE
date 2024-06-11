@@ -1,34 +1,49 @@
-import React from "react";
+import React, { useState } from "react";
 
 import { NavLink } from "react-router-dom";
-import toast, { Toaster } from 'react-hot-toast';
+import { Toaster } from 'react-hot-toast';
 
 import Row from "react-bootstrap/Row";
 import Card from "react-bootstrap/Card";
 import Table from "react-bootstrap/Table";
 import Dropdown from "react-bootstrap/Dropdown";
-import Badge from "react-bootstrap/Badge";
 
 import { IoMdEye } from "react-icons/io";
 import { FaRegEdit } from "react-icons/fa";
 import { MdDelete } from "react-icons/md";
 import { FaEllipsisVertical } from "react-icons/fa6";
-import { FaChevronDown } from "react-icons/fa";
 
 import Paginations from "../Pagination/Paginations";
-import { BASE_URL } from "../../services/helper";
 import "./table.css";
 
 const Tables = ({
     leadsData,
     handleDeleteLeads,
-    handleFetchLeads,
     handlePreviousPage,
     handleNextPage,
     currentPage,
     totalPages,
     handleSetPage,
 }) => {
+    const [selectAll, setSelectAll] = useState(false);
+    const [selectedRows, setSelectedRows] = useState([]);
+
+    const handleSelectAll = () => {
+        const newSelectAll = !selectAll;
+        setSelectAll(newSelectAll);
+        if (newSelectAll) {
+            setSelectedRows(leadsData.map((lead) => lead._id));
+        } else {
+            setSelectedRows([]);
+        }
+    };
+
+    const handleSelectRow = (id) => {
+        const newSelectedRows = selectedRows.includes(id)
+            ? selectedRows.filter((rowId) => rowId !== id)
+            : [...selectedRows, id];
+        setSelectedRows(newSelectedRows);
+    };
     // Function to handle status chang
     return (
         <div className="container">
@@ -38,6 +53,7 @@ const Tables = ({
                         <Table className="align-items-center" responsive="sm">
                             <thead className="thead-dark">
                                 <tr className="table-dark">
+                                    <th><input type="checkbox" checked={selectAll} onChange={handleSelectAll} /></th>
                                     <th>ID</th>
                                     <th>Customer Name</th>
                                     <th>Contact Person</th>
@@ -53,7 +69,12 @@ const Tables = ({
                                     leadsData.map((element, index) => {
                                         return (
                                             <>
-                                                <tr>
+                                                <tr key={element._id}>
+                                                    <td> <input
+                                                        type="checkbox"
+                                                        checked={selectedRows.includes(element._id)}
+                                                        onChange={() => handleSelectRow(element._id)}
+                                                    /></td>
                                                     <td>{index + 1 + (currentPage - 1) * 4}</td>
                                                     <td>{element.customer_name}</td>
                                                     <td>{element.mobile}</td>
